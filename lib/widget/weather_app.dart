@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hava_durumu/blocs/weather/weather_bloc.dart';
@@ -9,7 +11,7 @@ import 'package:hava_durumu/widget/weather_picture.dart';
 
 class WeatherApp extends StatelessWidget {
   String kullanicininSectigiSehir = "Ankara";
-
+  Completer<void> _refreshCompleter = Completer<void>();
   @override
   Widget build(BuildContext context) {
     final _weatherBloc = BlocProvider.of<WeatherBloc>(context);
@@ -25,7 +27,7 @@ class WeatherApp extends StatelessWidget {
                   context,
                   MaterialPageRoute(builder: (context) => SehirSecWidget()),
                 );
-                debugPrint("secilen sehir " + kullanicininSectigiSehir);
+                // debugPrint("secilen sehir " + kullanicininSectigiSehir);
                 if (kullanicininSectigiSehir != null) {
                   _weatherBloc.add(
                       FetchWeatherEvent(sehirAdi: kullanicininSectigiSehir));
@@ -38,50 +40,66 @@ class WeatherApp extends StatelessWidget {
           builder: (BuildContext context, WeatherState state) {
             if (state is WeatherInitial) {
               return Center(
-                child: Text("Şehir Seçiniz"),
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Text(
+                    "\tÇeşitli hava durumu tahmincilerinden hava durumu tahminlerini alan ve en olası sonucu hesaplayıp sizlere gösteren Hava Durumu'na hoş geldiniz.\n\n \t "
+                    "Hava durumunu öğrenmek istediğiniz şehrin adını, yukarıdaki arama yerine yazın.",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
               );
             }
 
-            //  if (state is WeatherLoadingState) {
-            //  return Center(
-            //      child: CircularProgressIndicator(),
-            //      );
-            //      }
+            if (state is WeatherLoadingState) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
 
             if (state is WeatherLoadedState) {
               final getirilenWeather = state.weather;
+              _refreshCompleter.complete();
+              _refreshCompleter = Completer();
 
-              return ListView(
-                children: [
-                  Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Center(
-                        child: LocationWidget(
-                          secilenSehir: getirilenWeather.title,
-                        ),
-                      )),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Center(child: LastUpdateWidget()),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Center(child: WeatherPictureWidget()),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Center(child: MaxMinTemperatureWidget()),
-                  ),
-                ],
+              return RefreshIndicator(
+                onRefresh: () {
+                  _weatherBloc.add(
+                      RefreshWeatherEvent(sehirAdi: getirilenWeather.title));
+                  return _refreshCompleter.future;
+                },
+                child: ListView(
+                  children: [
+                    Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Center(
+                          child: LocationWidget(
+                            secilenSehir: getirilenWeather.title,
+                          ),
+                        )),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Center(child: LastUpdateWidget()),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Center(child: WeatherPictureWidget()),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Center(child: MaxMinTemperatureWidget()),
+                    ),
+                  ],
+                ),
               );
             }
             if (state is WeatherErrorState) {
               return Center(
-                child: Text("hata oluştu"),
+                child: Text("Veri getirilemedi"),
               );
             }
             return Center(
-              child: CircularProgressIndicator(),
+              child: Text("Veri getirilemedi"),
             );
           },
         ),

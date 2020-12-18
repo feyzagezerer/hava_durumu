@@ -15,7 +15,7 @@ class LastUpdateWidget extends StatelessWidget {
 
       return Text(
         'Son güncelleme ' + TimeOfDay.fromDateTime(newDate).format(context),
-        style: TextStyle(fontSize: 28, fontWeight: FontWeight.w500),
+        style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
       );
     });
   }

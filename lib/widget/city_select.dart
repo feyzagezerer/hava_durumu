@@ -12,7 +12,7 @@ class _SehirSecWidgetState extends State<SehirSecWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Şehir Seç"),
+        title: Text("Şehir Arama"),
       ),
       body: Form(
         child: Row(
@@ -25,7 +25,7 @@ class _SehirSecWidgetState extends State<SehirSecWidget> {
                   controller: _textController,
                   decoration: InputDecoration(
                     labelText: "Şehir",
-                    hintText: "Şehir Seçin",
+                    hintText: "Şehir arayın",
                     border: OutlineInputBorder(),
                   ),
                 ),

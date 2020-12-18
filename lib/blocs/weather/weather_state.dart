@@ -15,15 +15,22 @@ class WeatherLoadingState extends WeatherState {
 }
 
 class WeatherLoadedState extends WeatherState {
-  final Weather weather;
+  Weather weather;
   WeatherLoadedState({@required this.weather});
 
   @override
-
-  List<Object> get props => throw UnimplementedError();
+  List<Object> get props => [
+        weather.title,
+        weather.time,
+        weather.locationType,
+        weather.woeid,
+        weather.lattLong,
+        weather.consolidatedWeather,
+        weather.sources
+      ];
 }
 
 class WeatherErrorState extends WeatherState {
   @override
-  List<Object> get props => throw UnimplementedError();
+  List<Object> get props => [];
 }
