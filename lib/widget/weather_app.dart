@@ -41,7 +41,7 @@ class WeatherApp extends StatelessWidget {
             if (state is WeatherInitial) {
               return Center(
                 child: Padding(
-                  padding: const EdgeInsets.all(10.0),
+                  padding: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 400.0),
                   child: Text(
                     "\tÇeşitli hava durumu tahmincilerinden hava durumu tahminlerini alan ve en olası sonucu hesaplayıp sizlere gösteren Hava Durumu'na hoş geldiniz.\n\n \t "
                     "Hava durumunu öğrenmek istediğiniz şehrin adını, yukarıdaki arama yerine yazın.",
